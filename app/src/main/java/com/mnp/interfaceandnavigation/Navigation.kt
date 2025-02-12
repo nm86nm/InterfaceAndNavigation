@@ -30,29 +30,29 @@ import com.mnp.interfaceandnavigation.ui.Screen
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Screen.MainScreen.route){
-        composable(route = Screen.MainScreen.route){
+    NavHost(navController = navController, startDestination = Screen.MainScreen.route) {
+        composable(route = Screen.MainScreen.route) {
             MainScreen(navController = navController)
         }
         composable(
             route = Screen.DetailScreen.route + "/{name}",
-             arguments = listOf(
-                 navArgument("name"){
-                     type = NavType.StringType
-                     defaultValue = "Maciej"
-                     nullable = true
-                 }
-             )
-        ){ entry ->
-            DetailScreen(name = entry.arguments?.getString("name"))            
+            arguments = listOf(
+                navArgument("name") {
+                    type = NavType.StringType
+                    defaultValue = "Maciej"
+                    nullable = true
+                }
+            )
+        ) { entry ->
+            DetailScreen(name = entry.arguments?.getString("name"))
         }
     }
 }
 
 @Composable
-fun MainScreen(navController: NavController){
+fun MainScreen(navController: NavController) {
     var text by remember {
-        mutableStateOf("")
+        mutableStateOf("name")
     }
 
     Column(
@@ -71,7 +71,12 @@ fun MainScreen(navController: NavController){
         Spacer(modifier = Modifier.height(8.dp))
         Button(
             onClick = {
-                navController.navigate(Screen.DetailScreen.withArgs(text))
+                if (text.isNotEmpty())
+                    navController.navigate(Screen.DetailScreen.withArgs(text))
+                else {
+                    text = "name"
+                    navController.navigate(Screen.DetailScreen.withArgs(text))
+                }
             },
             modifier = Modifier.align(Alignment.End)
         ) {
@@ -81,11 +86,11 @@ fun MainScreen(navController: NavController){
 }
 
 @Composable
-fun DetailScreen(name: String?){
-    Box (
+fun DetailScreen(name: String?) {
+    Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
-    ){
+    ) {
         Text(text = "Hello, $name")
     }
 }
